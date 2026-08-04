@@ -36,10 +36,117 @@ class AgenticDecisionEngine:
 
     def __init__(self):
         self.decision_history = deque(maxlen=200)
-        self.incident_log: List[Dict] = []
+        self.incident_log: List[Dict] = self._get_initial_mock_incidents()
         self.cycle_count = 0
         self.last_decision: Optional[Dict] = None
         self._active_mitigations: Dict[str, bool] = {}
+
+    def _get_initial_mock_incidents(self) -> List[Dict]:
+        """Pre-populate realistic mock safety incidents for demo & visualization."""
+        now = datetime.utcnow()
+        return [
+            {
+                "incident_id": "INC-8A91B2CF",
+                "timestamp": (now).isoformat(),
+                "title": "🚨 CRITICAL: Active Fire / Ignition Detected",
+                "incident_type": "fire",
+                "severity": "critical",
+                "hazard_score": 88.5,
+                "zone": "Mixing Room",
+                "status": "open",
+                "sensor_snapshot": {
+                    "temperature": 58.2,
+                    "humidity": 18.5,
+                    "smoke_ppm": 340.0,
+                    "gas_ppm": 420.0,
+                    "dust_ugm3": 180.0,
+                    "flame_detected": True,
+                    "current_amps": 15.4,
+                },
+                "triggered_rules": [
+                    {"id": "FLAME_GAS", "label": "Open Flame + Gas Present", "bonus": 40},
+                    {"id": "IGNITION_RISK", "label": "Ignition Risk Compound", "bonus": 25}
+                ],
+                "ai_reasoning": "STEP 1 [ASSESS]: Overall Hazard Score 88.5% (CRITICAL) → STEP 2 [ANALYZE]: Flame Sensor DETECTED + Gas 420ppm → STEP 3 [COMPOUND]: Open Flame + Gas Present rule triggered → STEP 4 [ESCALATE]: Immediate emergency protocol initiated.",
+                "actions_taken": ["Activate Exhaust Fan", "Trigger Alarm / Buzzer", "Activate Warning LED", "⚠️ EVACUATION ALERT"],
+                "reported_by": "SAFE-FUSE AI",
+            },
+            {
+                "incident_id": "INC-7C34D9E0",
+                "timestamp": (now).isoformat(),
+                "title": "⚠️ HIGH: Dust Explosion Risk Detected",
+                "incident_type": "dust_explosion",
+                "severity": "high",
+                "hazard_score": 72.0,
+                "zone": "Storage Vault",
+                "status": "open",
+                "sensor_snapshot": {
+                    "temperature": 44.0,
+                    "humidity": 24.0,
+                    "smoke_ppm": 160.0,
+                    "gas_ppm": 210.0,
+                    "dust_ugm3": 280.0,
+                    "flame_detected": False,
+                    "current_amps": 8.2,
+                },
+                "triggered_rules": [
+                    {"id": "DUST_EXPLOSION", "label": "Dust Explosion Potential", "bonus": 30}
+                ],
+                "ai_reasoning": "STEP 1 [ASSESS]: Hazard Score 72.0% (HIGH) → STEP 2 [ANALYZE]: High dust density (280µg/m³) + low humidity (24%) → STEP 3 [COMPOUND]: Dust Explosion Potential triggered → STEP 4 [ACTION]: Exhaust fan & humidifier activated.",
+                "actions_taken": ["Activate Exhaust Fan", "Activate Humidifier", "Activate Warning LED"],
+                "reported_by": "SAFE-FUSE AI",
+            },
+            {
+                "incident_id": "INC-6E12A4B8",
+                "timestamp": (now).isoformat(),
+                "title": "⚠️ HIGH: Hazardous Gas Concentration Alert",
+                "incident_type": "gas_leak",
+                "severity": "high",
+                "hazard_score": 64.5,
+                "zone": "Chemical Plant Zone 3",
+                "status": "resolved",
+                "sensor_snapshot": {
+                    "temperature": 38.5,
+                    "humidity": 45.0,
+                    "smoke_ppm": 110.0,
+                    "gas_ppm": 380.0,
+                    "dust_ugm3": 45.0,
+                    "flame_detected": False,
+                    "current_amps": 6.0,
+                },
+                "triggered_rules": [
+                    {"id": "CHEMICAL_RELEASE", "label": "Chemical Release Detected", "bonus": 20}
+                ],
+                "ai_reasoning": "STEP 1 [ASSESS]: Hazard Score 64.5% (HIGH) → STEP 2 [ANALYZE]: Gas concentration spike (380ppm MQ-135) → STEP 3 [ACTION]: Exhaust ventilation initiated until gas levels normalized.",
+                "actions_taken": ["Activate Exhaust Fan"],
+                "reported_by": "SAFE-FUSE AI",
+            },
+            {
+                "incident_id": "INC-4F56E7D8",
+                "timestamp": (now).isoformat(),
+                "title": "Electrical Overload Warning",
+                "incident_type": "electrical",
+                "severity": "medium",
+                "hazard_score": 48.0,
+                "zone": "Electrical Room",
+                "status": "resolved",
+                "sensor_snapshot": {
+                    "temperature": 49.0,
+                    "humidity": 28.0,
+                    "smoke_ppm": 85.0,
+                    "gas_ppm": 120.0,
+                    "dust_ugm3": 30.0,
+                    "flame_detected": False,
+                    "current_amps": 16.8,
+                },
+                "triggered_rules": [
+                    {"id": "ELECTRICAL_HAZARD", "label": "Electrical Overload + Humidity", "bonus": 15}
+                ],
+                "ai_reasoning": "STEP 1 [ASSESS]: Hazard Score 48.0% (MEDIUM) → STEP 2 [ANALYZE]: Current 16.8A exceeding safe threshold (12A) → STEP 3 [ACTION]: Cooling fan enabled to prevent electrical fire.",
+                "actions_taken": ["Activate Cooling Fan"],
+                "reported_by": "SAFE-FUSE AI",
+            }
+        ]
 
     def process(
         self,
