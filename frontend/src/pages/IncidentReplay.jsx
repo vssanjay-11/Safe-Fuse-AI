@@ -736,7 +736,7 @@ function ZoneRiskMap({ incidents }) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'default',
               }}
-              animate={isOpen ? { boxShadow: [`0 0 0 0 ${sev.color}40`, `0 0 8px 4px ${sev.color}20`, `0 0 0 0 ${sev.color}40`] } : {}}
+              animate={isOpen && sev ? { boxShadow: [`0 0 0 0 ${sev.color}40`, `0 0 8px 4px ${sev.color}20`, `0 0 0 0 ${sev.color}40`] } : {}}
               transition={{ repeat: Infinity, duration: 2 }}
             >
               <span style={{
