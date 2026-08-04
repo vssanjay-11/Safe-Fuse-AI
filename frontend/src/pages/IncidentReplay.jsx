@@ -331,12 +331,12 @@ function CameraFeed({ zone, severity, isOpen, image, label, time }) {
               transition={{ repeat: Infinity, duration: 1.2 }}
               style={{ width: 6, height: 6, borderRadius: '50%', background: '#EF4444' }}
             />
-            <span style={{ fontSize: 7, color: '#EF4444', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>REC</span>
+            <span style={{ fontSize: 9, color: '#EF4444', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>REC</span>
           </div>
         )}
         {/* Timestamp top-left */}
         <div style={{
-          position: 'absolute', top: 7, left: 8, fontSize: 8,
+          position: 'absolute', top: 7, left: 8, fontSize: 10,
           color: 'rgba(255,255,255,0.8)', fontFamily: 'var(--font-mono)',
           textShadow: '0 1px 4px rgba(0,0,0,0.9)',
         }}>
@@ -347,15 +347,15 @@ function CameraFeed({ zone, severity, isOpen, image, label, time }) {
           position: 'absolute', bottom: 0, left: 0, right: 0,
           background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
           padding: '14px 8px 5px',
-          fontSize: 8, color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)',
+          fontSize: 10, color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)',
           textShadow: '0 1px 4px rgba(0,0,0,0.9)',
         }}>
           {label || zone}
         </div>
       </div>
       <div className="flex items-center justify-between px-2 py-1.5" style={{ borderTop: `1px solid ${sev.border}` }}>
-        <span style={{ fontSize: 8, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{zone.slice(0, 18)}</span>
-        <span className={`badge badge-${severity}`} style={{ fontSize: 7, padding: '1px 6px' }}>
+        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{zone.slice(0, 18)}</span>
+        <span className={`badge badge-${severity}`} style={{ fontSize: 9, padding: '1px 6px' }}>
           {isOpen ? '🔴 LIVE' : '⏺ ARCHIVED'}
         </span>
       </div>
@@ -389,10 +389,10 @@ function SensorMini({ label, value, unit, sparkData, color, icon: Icon }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           {Icon && <Icon size={10} style={{ color }} />}
-          <span style={{ fontSize: 9, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{label}</span>
+          <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{label}</span>
         </div>
-        <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: 'var(--font-mono)' }}>
-          {value}<span style={{ fontSize: 8, opacity: 0.7 }}>{unit}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color, fontFamily: 'var(--font-mono)' }}>
+          {value}<span style={{ fontSize: 10, opacity: 0.7 }}>{unit}</span>
         </span>
       </div>
       <Sparkline data={sparkData} color={color} width={80} height={20} />
@@ -423,10 +423,10 @@ function TimelineStrip({ events }) {
               width: 7, height: 7, borderRadius: '50%',
               background: col, boxShadow: `0 0 6px ${col}60`,
             }} />
-            <div style={{ fontSize: 9, color: col, fontFamily: 'var(--font-mono)', flexShrink: 0, paddingTop: 3 }}>
+            <div style={{ fontSize: 11, color: col, fontFamily: 'var(--font-mono)', flexShrink: 0, paddingTop: 3 }}>
               {ev.t}
             </div>
-            <div style={{ fontSize: 10, color: 'var(--text-secondary)', paddingTop: 2, lineHeight: 1.4 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)', paddingTop: 2, lineHeight: 1.4 }}>
               {ev.event}
             </div>
           </motion.div>
@@ -474,34 +474,34 @@ function IncidentCard({ incident, onResolve, isSelected, onSelect }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-[11px] font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
+              <h3 className="text-[13px] font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
                 {incident.title}
               </h3>
               <div className="flex items-center gap-1.5 flex-shrink-0">
-                <span className={`badge badge-${incident.severity}`} style={{ fontSize: 9 }}>{incident.severity}</span>
-                <span className={`badge ${isOpen ? 'badge-warning' : 'badge-normal'}`} style={{ fontSize: 9 }}>
+                <span className={`badge badge-${incident.severity}`} style={{ fontSize: 11 }}>{incident.severity}</span>
+                <span className={`badge ${isOpen ? 'badge-warning' : 'badge-normal'}`} style={{ fontSize: 11 }}>
                   {incident.status}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-3 mt-1.5" style={{ flexWrap: 'wrap', gap: '6px 10px' }}>
-              <span style={{ fontSize: 9, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{incident.incident_id}</span>
-              <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>·</span>
-              <span className="flex items-center gap-1" style={{ fontSize: 9, color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{incident.incident_id}</span>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>·</span>
+              <span className="flex items-center gap-1" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                 <MapPin size={8} /> {incident.zone}
               </span>
-              <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>·</span>
-              <span className="flex items-center gap-1" style={{ fontSize: 9, color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>·</span>
+              <span className="flex items-center gap-1" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                 <Clock size={8} /> {new Date(incident.timestamp).toLocaleString()}
               </span>
-              <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>·</span>
-              <span style={{ fontSize: 9, color: sev.color, fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>·</span>
+              <span style={{ fontSize: 11, color: sev.color, fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
                 Score: {incident.hazard_score?.toFixed(0)}%
               </span>
               {incident.duration_minutes && (
                 <>
-                  <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>·</span>
-                  <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>~{incident.duration_minutes}min</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>·</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>~{incident.duration_minutes}min</span>
                 </>
               )}
             </div>
@@ -558,8 +558,8 @@ function IncidentCard({ incident, onResolve, isSelected, onSelect }) {
                         return (
                           <div key={k} className="px-2 py-1.5 rounded-lg text-center"
                             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-dim)' }}>
-                            <div style={{ fontSize: 8, color: 'var(--text-muted)' }}>{k.replace(/_/g, ' ')}</div>
-                            <div style={{ fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-mono)', color: boolColor, marginTop: 2 }}>
+                            <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{k.replace(/_/g, ' ')}</div>
+                            <div style={{ fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-mono)', color: boolColor, marginTop: 2 }}>
                               {isBool ? (v ? 'YES' : 'NO') : v?.toFixed?.(1) ?? v}
                             </div>
                           </div>
@@ -580,7 +580,7 @@ function IncidentCard({ incident, onResolve, isSelected, onSelect }) {
                   {/* AI Reasoning */}
                   <div>
                     <div className="section-label mb-1.5">AI Reasoning Chain</div>
-                    <div className="p-3 rounded-lg text-[10px] leading-relaxed"
+                    <div className="p-3 rounded-lg text-[12px] leading-relaxed"
                       style={{
                         background: 'rgba(0,229,255,0.04)', color: 'var(--text-secondary)',
                         border: '1px solid rgba(0,229,255,0.08)', fontFamily: 'var(--font-mono)'
@@ -597,10 +597,10 @@ function IncidentCard({ incident, onResolve, isSelected, onSelect }) {
                         <div key={i} className="flex items-center justify-between px-2 py-1.5 rounded-lg"
                           style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.12)' }}>
                           <div>
-                            <div style={{ fontSize: 9, fontWeight: 700, color: '#EF4444', fontFamily: 'var(--font-mono)' }}>{r.id}</div>
-                            <div style={{ fontSize: 9, color: 'var(--text-muted)' }}>{r.label}</div>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#EF4444', fontFamily: 'var(--font-mono)' }}>{r.id}</div>
+                            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{r.label}</div>
                           </div>
-                          <span style={{ fontSize: 10, fontWeight: 700, color: '#F97316', fontFamily: 'var(--font-mono)' }}>+{r.bonus}%</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: '#F97316', fontFamily: 'var(--font-mono)' }}>+{r.bonus}%</span>
                         </div>
                       ))}
                     </div>
@@ -612,7 +612,7 @@ function IncidentCard({ incident, onResolve, isSelected, onSelect }) {
                       <div className="section-label mb-1.5">AI Actions Taken</div>
                       <div className="flex flex-wrap gap-1.5">
                         {incident.actions_taken.map((a, i) => (
-                          <span key={i} className="badge badge-hw" style={{ fontSize: 9 }}>{a}</span>
+                          <span key={i} className="badge badge-hw" style={{ fontSize: 11 }}>{a}</span>
                         ))}
                       </div>
                     </div>
@@ -676,12 +676,12 @@ function ActivityFeed({ incidents }) {
                 background: col, flexShrink: 0, marginTop: 4,
               }} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 9, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{ev.event}</div>
-                <div style={{ fontSize: 8, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.4 }}>{ev.event}</div>
+                <div style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>
                   {ev.incident_id} · {ev.zone}
                 </div>
               </div>
-              <span style={{ fontSize: 8, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', flexShrink: 0 }}>{ev.t}</span>
+              <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', flexShrink: 0 }}>{ev.t}</span>
             </motion.div>
           );
         })}
@@ -740,7 +740,7 @@ function ZoneRiskMap({ incidents }) {
               transition={{ repeat: Infinity, duration: 2 }}
             >
               <span style={{
-                fontSize: 7, color: sev ? sev.color : 'var(--text-muted)',
+                fontSize: 9, color: sev ? sev.color : 'var(--text-muted)',
                 fontFamily: 'var(--font-mono)', textAlign: 'center',
                 lineHeight: 1.3, padding: '0 3px',
               }}>
@@ -754,7 +754,7 @@ function ZoneRiskMap({ incidents }) {
         {['critical', 'high', 'medium', 'low'].map(s => (
           <div key={s} className="flex items-center gap-1">
             <div style={{ width: 6, height: 6, borderRadius: 2, background: SEV[s].color, opacity: 0.8 }} />
-            <span style={{ fontSize: 8, color: 'var(--text-muted)' }}>{s}</span>
+            <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{s}</span>
           </div>
         ))}
       </div>
@@ -767,11 +767,11 @@ function StatCard({ label, value, color, icon: Icon, sub }) {
   return (
     <div className="glass-card p-4 flex flex-col gap-1">
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: 9, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{label}</span>
+        <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{label}</span>
         {Icon && <Icon size={12} style={{ color }} />}
       </div>
       <div style={{ fontSize: 26, fontWeight: 800, color, fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 9, color: 'var(--text-muted)' }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{sub}</div>}
     </div>
   );
 }
@@ -826,7 +826,7 @@ export default function IncidentReplay() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Incident Replay</h1>
-          <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
             AI-generated incident timeline · Click to expand · Real-time event feed
           </p>
         </div>
@@ -854,7 +854,7 @@ export default function IncidentReplay() {
             <Filter size={11} style={{ color: 'var(--text-muted)' }} />
             {['all', 'open', 'resolved', 'critical', 'high', 'medium', 'low'].map(f => (
               <button key={f} onClick={() => setFilter(f)}
-                className="px-3 py-1 rounded-lg text-[10px] font-semibold transition-all"
+                className="px-3 py-1 rounded-lg text-[12px] font-semibold transition-all"
                 style={{
                   background: filter === f ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.03)',
                   border: `1px solid ${filter === f ? 'var(--border-bright)' : 'var(--border-dim)'}`,
@@ -883,7 +883,7 @@ export default function IncidentReplay() {
                 <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-10 text-center">
                   <Shield size={32} style={{ color: '#22C55E', margin: '0 auto 12px' }} />
                   <div className="text-sm font-semibold" style={{ color: '#22C55E' }}>No incidents found</div>
-                  <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-[13px] mt-1" style={{ color: 'var(--text-muted)' }}>
                     {filter === 'all' ? 'System is running safely.' : `No ${filter} incidents.`}
                   </div>
                 </motion.div>

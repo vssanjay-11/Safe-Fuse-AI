@@ -8,8 +8,8 @@ function SettingRow({ label, description, children }) {
   return (
     <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: 'var(--border-dim)' }}>
       <div>
-        <div className="text-[11px] font-semibold" style={{ color: 'var(--text-primary)' }}>{label}</div>
-        {description && <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{description}</div>}
+        <div className="text-[13px] font-semibold" style={{ color: 'var(--text-primary)' }}>{label}</div>
+        {description && <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{description}</div>}
       </div>
       {children}
     </div>
@@ -61,7 +61,7 @@ export default function Settings() {
     <div className="space-y-4">
       <div>
         <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Settings</h1>
-        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
           System configuration · MQTT · Hardware mode · Alert thresholds
         </p>
       </div>
@@ -104,7 +104,7 @@ export default function Settings() {
               <NumberInput value={mqttPort} onChange={setMqttPort} min={1} max={65535} />
             </SettingRow>
             <SettingRow label="Topic Prefix" description="MQTT topic: safefuse/sensors/data">
-              <span className="text-[10px] font-mono" style={{ color: 'var(--cyan)' }}>safefuse/#</span>
+              <span className="text-[12px] font-mono" style={{ color: 'var(--cyan)' }}>safefuse/#</span>
             </SettingRow>
           </div>
 
@@ -116,11 +116,11 @@ export default function Settings() {
             <SettingRow label="Update Interval" description="Sensor polling & broadcast interval">
               <div className="flex items-center gap-1.5">
                 <NumberInput value={updateInterval} onChange={setInterval} min={1} max={10} />
-                <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>sec</span>
+                <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>sec</span>
               </div>
             </SettingRow>
             <SettingRow label="Database" description="SQLite (development) — SafeFuse.db">
-              <span className="text-[10px] font-mono" style={{ color: 'var(--cyan)' }}>safefuse.db</span>
+              <span className="text-[12px] font-mono" style={{ color: 'var(--cyan)' }}>safefuse.db</span>
             </SettingRow>
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function Settings() {
               <Sliders size={14} style={{ color: 'var(--cyan)' }} />
               <span className="section-label">Alert Thresholds</span>
             </div>
-            <div className="text-[9px] mb-3 p-2 rounded-lg" style={{ background: 'rgba(249,115,22,0.08)', color: '#F97316', border: '1px solid rgba(249,115,22,0.2)' }}>
+            <div className="text-[11px] mb-3 p-2 rounded-lg" style={{ background: 'rgba(249,115,22,0.08)', color: '#F97316', border: '1px solid rgba(249,115,22,0.2)' }}>
               <AlertTriangle size={10} className="inline mr-1" />
               Changes apply to next AI evaluation cycle (2 seconds)
             </div>
@@ -147,16 +147,16 @@ export default function Settings() {
             ].map(({ key, label, unit }) => (
               <div key={key} className="py-2.5 border-b" style={{ borderColor: 'var(--border-dim)' }}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{label}</span>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{unit}</span>
+                  <span className="text-[12px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{label}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{unit}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[9px]" style={{ color: '#F97316' }}>Warn</span>
+                    <span className="text-[11px]" style={{ color: '#F97316' }}>Warn</span>
                     <NumberInput value={thresholds[`${key}_warn`]} onChange={v => setThresh(`${key}_warn`, v)} />
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[9px]" style={{ color: '#EF4444' }}>Critical</span>
+                    <span className="text-[11px]" style={{ color: '#EF4444' }}>Critical</span>
                     <NumberInput value={thresholds[`${key}_critical`]} onChange={v => setThresh(`${key}_critical`, v)} />
                   </div>
                 </div>
@@ -176,7 +176,7 @@ export default function Settings() {
                 { email: 'safety@safefuse.ai',  role: 'Safety Officer', password: 'Safety2026' },
                 { email: 'manager@safefuse.ai', role: 'Plant Manager',  password: 'Manager2026' },
               ].map(u => (
-                <div key={u.email} className="flex items-center justify-between text-[10px] py-1.5 border-b"
+                <div key={u.email} className="flex items-center justify-between text-[12px] py-1.5 border-b"
                   style={{ borderColor: 'var(--border-dim)' }}>
                   <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>{u.email}</span>
                   <span className="badge badge-sim">{u.role}</span>

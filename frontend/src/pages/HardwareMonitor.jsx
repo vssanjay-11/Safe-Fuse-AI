@@ -24,13 +24,13 @@ function SensorPanel({ label, hardware, pin, value, unit, warn, critical, lowDan
             <Icon size={15} style={{ color: statusColor }} />
           </div>
           <div>
-            <div className="text-[11px] font-bold" style={{ color: 'var(--text-primary)' }}>{label}</div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{hardware}</div>
+            <div className="text-[13px] font-bold" style={{ color: 'var(--text-primary)' }}>{label}</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{hardware}</div>
           </div>
         </div>
         <div className="text-right">
           <span className={`badge badge-${isCrit ? 'critical' : isWarn ? 'warning' : 'normal'}`}>{statusLabel}</span>
-          <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{pin}</div>
+          <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{pin}</div>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ function SensorPanel({ label, hardware, pin, value, unit, warn, critical, lowDan
         </ResponsiveContainer>
       )}
 
-      <div className="flex justify-between text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>
+      <div className="flex justify-between text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
         <span>Warn: {warn}{unit}</span>
         <span>Critical: {critical}{unit}</span>
       </div>
@@ -71,12 +71,12 @@ function RelayCard({ device, label, description, icon: Icon, state, onToggle, lo
               style={{ color: state ? color : 'var(--text-muted)' }} />
           </div>
           <div>
-            <div className="text-[11px] font-bold" style={{ color: 'var(--text-primary)' }}>{label}</div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{description}</div>
+            <div className="text-[13px] font-bold" style={{ color: 'var(--text-primary)' }}>{label}</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{description}</div>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <span className={`badge ${state ? 'badge-normal' : ''}`} style={{ fontSize: 10, color: state ? color : 'var(--text-muted)' }}>
+          <span className={`badge ${state ? 'badge-normal' : ''}`} style={{ fontSize: 12, color: state ? color : 'var(--text-muted)' }}>
             {state ? 'ON' : 'OFF'}
           </span>
           {state && (
@@ -88,7 +88,7 @@ function RelayCard({ device, label, description, icon: Icon, state, onToggle, lo
       <button
         onClick={onToggle}
         disabled={loading}
-        className={`w-full py-2 rounded-lg text-[11px] font-semibold transition-all ${state ? 'btn-danger' : 'btn-primary'}`}>
+        className={`w-full py-2 rounded-lg text-[13px] font-semibold transition-all ${state ? 'btn-danger' : 'btn-primary'}`}>
         {loading ? 'Switching...' : state ? `Turn OFF ${label}` : `Turn ON ${label}`}
       </button>
     </motion.div>
@@ -130,7 +130,7 @@ export default function HardwareMonitor() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Hardware Monitor</h1>
-          <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
             ESP32 Sensors · Live Readings · Relay Control
           </p>
         </div>
@@ -174,23 +174,23 @@ export default function HardwareMonitor() {
         <div className="section-label mb-2">Recent Relay Events</div>
         <div className="space-y-1">
           {(relayStatus.recent_events || []).slice(0, 8).map((e, i) => (
-            <div key={i} className="flex items-center gap-3 py-1.5 border-b text-[10px]"
+            <div key={i} className="flex items-center gap-3 py-1.5 border-b text-[12px]"
               style={{ borderColor: 'var(--border-dim)' }}>
               <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                 style={{ background: e.action === 'ON' ? '#22C55E' : '#EF4444' }} />
               <span style={{ color: 'var(--text-secondary)' }}>{e.device_label}</span>
-              <span className={`badge ${e.action === 'ON' ? 'badge-normal' : 'badge-critical'}`} style={{ fontSize: 8 }}>
+              <span className={`badge ${e.action === 'ON' ? 'badge-normal' : 'badge-critical'}`} style={{ fontSize: 10 }}>
                 {e.action}
               </span>
               <span style={{ color: 'var(--text-muted)' }}>{e.triggered_by}</span>
               <span className="flex-1 truncate" style={{ color: 'var(--text-muted)' }}>{e.reason}</span>
-              <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: 9 }}>
+              <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>
                 {e.timestamp ? new Date(e.timestamp).toLocaleTimeString() : ''}
               </span>
             </div>
           ))}
           {(!relayStatus.recent_events || relayStatus.recent_events.length === 0) && (
-            <div className="text-[11px] text-center py-3" style={{ color: 'var(--text-muted)' }}>No relay events yet</div>
+            <div className="text-[13px] text-center py-3" style={{ color: 'var(--text-muted)' }}>No relay events yet</div>
           )}
         </div>
       </div>

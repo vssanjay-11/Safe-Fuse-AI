@@ -73,7 +73,7 @@ export default function Login() {
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
             Predictive AI-Powered Industrial Safety Intelligence
           </p>
-          <p className="text-[10px] mt-1 font-mono" style={{ color: 'rgba(0,229,255,0.5)' }}>
+          <p className="text-[12px] mt-1 font-mono" style={{ color: 'rgba(0,229,255,0.5)' }}>
             Predict · Explain · Act · Prevent
           </p>
         </div>
@@ -155,14 +155,14 @@ export default function Login() {
               <button key={cred.email} onClick={() => quickLogin(cred)}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all hover:bg-[rgba(0,229,255,0.06)]"
                 style={{ border: '1px solid var(--border-dim)', color: 'var(--text-secondary)' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10 }}>{cred.email}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{cred.email}</span>
                 <span className="badge badge-normal">{cred.role}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <p className="text-center text-[9px] mt-4" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-center text-[11px] mt-4" style={{ color: 'var(--text-muted)' }}>
           CIH 2026 Hackathon Demo · SAFE-FUSE AI v1.0
         </p>
       </motion.div>

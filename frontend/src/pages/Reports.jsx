@@ -99,7 +99,7 @@ export default function Reports() {
     <div className="space-y-4">
       <div>
         <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Reports</h1>
-        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
           Generate AI-compiled safety reports from live data
         </p>
       </div>
@@ -119,8 +119,8 @@ export default function Reports() {
                   <type.icon size={16} style={{ color: type.color }} />
                 </div>
                 <div className="flex-1">
-                  <div className="text-[11px] font-bold" style={{ color: 'var(--text-primary)' }}>{type.label}</div>
-                  <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{type.description}</div>
+                  <div className="text-[13px] font-bold" style={{ color: 'var(--text-primary)' }}>{type.label}</div>
+                  <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{type.description}</div>
                 </div>
                 {selectedType === type.id && <CheckCircle size={14} style={{ color: type.color }} />}
               </div>
@@ -143,35 +143,35 @@ export default function Reports() {
             <div className="h-full flex flex-col items-center justify-center" style={{ minHeight: 300 }}>
               <FileText size={40} style={{ color: 'var(--text-muted)', marginBottom: 12 }} />
               <div className="text-sm font-semibold" style={{ color: 'var(--text-muted)' }}>No report generated</div>
-              <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Select a report type and click Generate</div>
+              <div className="text-[13px] mt-1" style={{ color: 'var(--text-muted)' }}>Select a report type and click Generate</div>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-start justify-between">
                 <div>
                   <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{reportData.title}</h2>
-                  <div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     {reportData.report_id} · {new Date(reportData.generated_at).toLocaleString()}
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={downloadTXT} className="btn-primary text-[10px]">
+                  <button onClick={downloadTXT} className="btn-primary text-[12px]">
                     <Download size={10} /> .txt
                   </button>
-                  <button onClick={downloadJSON} className="btn-primary text-[10px]">
+                  <button onClick={downloadJSON} className="btn-primary text-[12px]">
                     <Download size={10} /> .json
                   </button>
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg text-[11px] leading-relaxed"
+              <div className="p-3 rounded-lg text-[13px] leading-relaxed"
                 style={{ background: 'rgba(0,229,255,0.04)', border: '1px solid rgba(0,229,255,0.1)', color: 'var(--text-secondary)' }}>
                 {reportData.summary}
               </div>
 
               <div>
                 <div className="section-label mb-2">Report Content (JSON)</div>
-                <div className="p-3 rounded-lg overflow-auto text-[9px] font-mono leading-relaxed"
+                <div className="p-3 rounded-lg overflow-auto text-[11px] font-mono leading-relaxed"
                   style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-dim)',
                     color: '#94A3B8', maxHeight: 300, fontFamily: 'var(--font-mono)' }}>
                   <pre>{JSON.stringify(reportData.content, null, 2)}</pre>

@@ -27,10 +27,10 @@ function SHAPChart({ shapValues }) {
       <div className="section-label mb-3">SHAP Feature Contributions</div>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={data} layout="vertical" margin={{ left: 10, right: 20 }}>
-          <XAxis type="number" domain={[0, 'dataMax']} tick={{ fontSize: 9, fill: '#475569' }} tickLine={false} axisLine={false} />
-          <YAxis dataKey="name" type="category" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} width={120} />
+          <XAxis type="number" domain={[0, 'dataMax']} tick={{ fontSize: 11, fill: '#475569' }} tickLine={false} axisLine={false} />
+          <YAxis dataKey="name" type="category" tick={{ fontSize: 12, fill: '#94A3B8' }} tickLine={false} axisLine={false} width={120} />
           <Tooltip
-            contentStyle={{ background: '#0D1526', border: '1px solid rgba(0,229,255,0.2)', borderRadius: 6, fontSize: 10 }}
+            contentStyle={{ background: '#0D1526', border: '1px solid rgba(0,229,255,0.2)', borderRadius: 6, fontSize: 12 }}
             formatter={(val, name, props) => [`${val.toFixed(2)}% contribution`, props.payload.value]}
           />
           <Bar dataKey="contribution" radius={[0, 4, 4, 0]}>
@@ -50,8 +50,8 @@ function SHAPChart({ shapValues }) {
               <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: c }} />
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center mb-0.5">
-                  <span className="text-[10px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{s.sensor}</span>
-                  <span className="text-[10px] font-mono" style={{ color: c }}>
+                  <span className="text-[12px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{s.sensor}</span>
+                  <span className="text-[12px] font-mono" style={{ color: c }}>
                     {s.value}{s.unit} · {s.contribution?.toFixed(2)}%
                   </span>
                 </div>
@@ -84,16 +84,16 @@ function DecisionFlow({ reasoning, decidedActions }) {
               transition={{ delay: i * 0.15 }}
               className="flex items-start gap-3 p-2.5 rounded-lg"
               style={{ background: 'rgba(0,229,255,0.04)', border: '1px solid rgba(0,229,255,0.08)' }}>
-              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold mt-0.5"
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold mt-0.5"
                 style={{ background: 'rgba(0,229,255,0.15)', color: 'var(--cyan)', fontFamily: 'var(--font-mono)', border: '1px solid rgba(0,229,255,0.3)' }}>
                 {i + 1}
               </div>
-              <p className="text-[10px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{step}</p>
+              <p className="text-[12px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{step}</p>
             </motion.div>
           ))}
         </AnimatePresence>
         {reasoning.length === 0 && (
-          <div className="text-[11px] text-center py-4" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-[13px] text-center py-4" style={{ color: 'var(--text-muted)' }}>
             Waiting for AI reasoning data...
           </div>
         )}
@@ -112,10 +112,10 @@ function DecisionFlow({ reasoning, decidedActions }) {
                   style={{ background: `${pColor}0D`, border: `1px solid ${pColor}25` }}>
                   <div className="w-1.5 h-1.5 rounded-full" style={{ background: pColor }} />
                   <div className="flex-1">
-                    <span className="text-[10px] font-semibold" style={{ color: pColor }}>{a.label}</span>
-                    <span className="text-[9px] ml-2" style={{ color: 'var(--text-muted)' }}>{a.device} → {a.action}</span>
+                    <span className="text-[12px] font-semibold" style={{ color: pColor }}>{a.label}</span>
+                    <span className="text-[11px] ml-2" style={{ color: 'var(--text-muted)' }}>{a.device} → {a.action}</span>
                   </div>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>P{a.priority}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>P{a.priority}</span>
                 </motion.div>
               );
             })}
@@ -138,7 +138,7 @@ export default function AIBrain() {
     <div className="space-y-4">
       <div>
         <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>AI Brain</h1>
-        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
           Reasoning · SHAP Explainability · Confidence · Decision Flow
         </p>
       </div>
@@ -166,12 +166,12 @@ export default function AIBrain() {
               <div className="text-4xl font-bold" style={{ color, fontFamily: 'var(--font-mono)' }}>
                 {hazardScore.toFixed(0)}
               </div>
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>/ 100</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>/ 100</div>
             </div>
           </div>
           <div className={`badge badge-${riskLevel} text-xs`}>{riskLevel.toUpperCase()}</div>
           <div className="w-full space-y-1">
-            <div className="flex justify-between text-[10px]">
+            <div className="flex justify-between text-[12px]">
               <span style={{ color: 'var(--text-muted)' }}>AI Confidence</span>
               <span style={{ color: 'var(--cyan)' }}>{confidence}%</span>
             </div>
@@ -181,7 +181,7 @@ export default function AIBrain() {
             </div>
           </div>
           <div className="w-full space-y-1">
-            <div className="flex justify-between text-[10px]">
+            <div className="flex justify-between text-[12px]">
               <span style={{ color: 'var(--text-muted)' }}>Safety Score</span>
               <span style={{ color: '#22C55E' }}>{safetyScore.toFixed(0)}%</span>
             </div>
@@ -204,16 +204,16 @@ export default function AIBrain() {
             {triggeredRules.length === 0 ? (
               <div className="flex items-center gap-2 py-2">
                 <Shield size={14} style={{ color: '#22C55E' }} />
-                <span className="text-[10px]" style={{ color: '#22C55E' }}>No compound hazards</span>
+                <span className="text-[12px]" style={{ color: '#22C55E' }}>No compound hazards</span>
               </div>
             ) : (
               <div className="space-y-2">
                 {triggeredRules.map((r, i) => (
                   <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     className="p-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                    <div className="text-[10px] font-bold" style={{ color: '#EF4444' }}>{r.label}</div>
-                    <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{r.description?.slice(0, 60)}...</div>
-                    <div className="text-[9px] mt-1" style={{ color: '#F97316' }}>+{r.bonus} bonus score</div>
+                    <div className="text-[12px] font-bold" style={{ color: '#EF4444' }}>{r.label}</div>
+                    <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{r.description?.slice(0, 60)}...</div>
+                    <div className="text-[11px] mt-1" style={{ color: '#F97316' }}>+{r.bonus} bonus score</div>
                   </motion.div>
                 ))}
               </div>
@@ -221,7 +221,7 @@ export default function AIBrain() {
           </div>
           <div className="glass-card p-4">
             <div className="section-label mb-2">Model Info</div>
-            <div className="space-y-1.5 text-[10px]" style={{ color: 'var(--text-muted)' }}>
+            <div className="space-y-1.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
               <div className="flex justify-between"><span>Engine</span><span style={{ color: 'var(--cyan)' }}>Compound Risk AI</span></div>
               <div className="flex justify-between"><span>Sensors</span><span style={{ color: 'var(--cyan)' }}>7 types</span></div>
               <div className="flex justify-between"><span>Compound Rules</span><span style={{ color: 'var(--cyan)' }}>6 active</span></div>
@@ -244,9 +244,9 @@ export default function AIBrain() {
                   <stop offset="95%" stopColor={color} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="time" tick={{ fontSize: 8, fill: '#475569' }} tickLine={false} axisLine={false} interval={9} />
-              <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: '#475569' }} tickLine={false} axisLine={false} />
-              <Tooltip contentStyle={{ background: '#0D1526', border: '1px solid rgba(0,229,255,0.2)', borderRadius: 6, fontSize: 10 }} />
+              <XAxis dataKey="time" tick={{ fontSize: 10, fill: '#475569' }} tickLine={false} axisLine={false} interval={9} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#475569' }} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ background: '#0D1526', border: '1px solid rgba(0,229,255,0.2)', borderRadius: 6, fontSize: 12 }} />
               <Area type="monotone" dataKey="value" stroke={color} strokeWidth={2} fill="url(#aiGrad)" />
             </AreaChart>
           </ResponsiveContainer>

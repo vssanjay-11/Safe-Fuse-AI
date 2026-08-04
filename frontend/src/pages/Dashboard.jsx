@@ -47,7 +47,7 @@ function HazardGauge({ score, color }) {
           className="text-4xl font-bold font-mono" style={{ color, fontFamily: 'var(--font-mono)' }}>
           {score.toFixed(0)}
         </motion.div>
-        <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>HAZARD SCORE</div>
+        <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>HAZARD SCORE</div>
       </div>
     </div>
   );
@@ -72,7 +72,7 @@ function SensorCard({ label, value, unit, icon: Icon, warn, critical, color, low
             style={{ background: `${statusColor}18`, border: `1px solid ${statusColor}30` }}>
             <Icon size={13} style={{ color: statusColor }} />
           </div>
-          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{label}</span>
+          <span className="text-[12px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{label}</span>
         </div>
         {isCrit && <motion.div animate={{ opacity: [1, 0.3] }} transition={{ repeat: Infinity, duration: 0.5 }}
           className="w-2 h-2 rounded-full" style={{ background: '#EF4444' }} />}
@@ -104,7 +104,7 @@ function QuickAction({ icon: Icon, label, color, onClick, active }) {
         boxShadow: active ? `0 0 12px ${color}30` : 'none',
       }}>
       <Icon size={16} style={{ color }} />
-      <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{label}</span>
+      <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{label}</span>
     </motion.button>
   );
 }
@@ -143,7 +143,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Mission Control</h1>
-          <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
             SAFE-FUSE AI Demo Plant · {hardwareMode === 'hardware' ? '🔌 Hardware Mode' : '🔵 Simulation Mode'}
           </p>
         </div>
@@ -175,10 +175,10 @@ export default function Dashboard() {
             <div className="text-2xl font-bold" style={{ color: '#22C55E', fontFamily: 'var(--font-mono)' }}>
               {safetyScore.toFixed(0)}%
             </div>
-            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Safety Score</div>
+            <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>Safety Score</div>
           </div>
           <div className="w-full mt-2">
-            <div className="flex justify-between text-[10px] mb-1" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex justify-between text-[12px] mb-1" style={{ color: 'var(--text-muted)' }}>
               <span>AI Confidence</span>
               <span style={{ color: 'var(--cyan)' }}>{confidence}%</span>
             </div>
@@ -196,7 +196,7 @@ export default function Dashboard() {
               <div className="text-lg font-bold truncate" style={{ color: anomalyZone ? '#F97316' : '#22C55E' }}>
                 {anomalyZone || 'All Clear'}
               </div>
-              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+              <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
                 {anomalyZone ? 'Anomaly Detected' : 'No active anomalies'}
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function Dashboard() {
             <div className="text-3xl font-bold font-mono" style={{ color: '#EF4444', fontFamily: 'var(--font-mono)' }}>
               {alerts.filter(a => a.severity === 'critical').length}
             </div>
-            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Critical</div>
+            <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>Critical</div>
           </div>
 
           <div className="glass-card p-4">
@@ -218,7 +218,7 @@ export default function Dashboard() {
             <div className="text-3xl font-bold font-mono" style={{ color: 'var(--cyan)', fontFamily: 'var(--font-mono)' }}>
               {decidedActions.length}
             </div>
-            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>This cycle</div>
+            <div className="text-[12px]" style={{ color: 'var(--text-muted)' }}>This cycle</div>
           </div>
 
           <div className="glass-card p-4">
@@ -226,7 +226,7 @@ export default function Dashboard() {
             <div className="flex items-center gap-2 mt-1">
               <Fan size={20} className={relayStatus.relay1?.on ? 'fan-spinning' : ''}
                 style={{ color: relayStatus.relay1?.on ? '#22C55E' : 'var(--text-muted)' }} />
-              <span className={`badge ${relayStatus.relay1?.on ? 'badge-normal' : ''}`} style={{ fontSize: 9 }}>
+              <span className={`badge ${relayStatus.relay1?.on ? 'badge-normal' : ''}`} style={{ fontSize: 11 }}>
                 {relayStatus.relay1?.on ? 'ON' : 'OFF'}
               </span>
             </div>
@@ -236,7 +236,7 @@ export default function Dashboard() {
             <div className="section-label mb-1">Humidifier</div>
             <div className="flex items-center gap-2 mt-1">
               <Waves size={20} style={{ color: relayStatus.humidifier?.on ? 'var(--cyan)' : 'var(--text-muted)' }} />
-              <span className={`badge ${relayStatus.humidifier?.on ? 'badge-hw' : ''}`} style={{ fontSize: 9 }}>
+              <span className={`badge ${relayStatus.humidifier?.on ? 'badge-hw' : ''}`} style={{ fontSize: 11 }}>
                 {relayStatus.humidifier?.on ? 'ON' : 'OFF'}
               </span>
             </div>
@@ -249,7 +249,7 @@ export default function Dashboard() {
           <ResponsiveContainer width="100%" height={200}>
             <RadarChart data={radarData}>
               <PolarGrid stroke="rgba(0,229,255,0.1)" />
-              <PolarAngleAxis dataKey="sensor" tick={{ fill: '#475569', fontSize: 10 }} />
+              <PolarAngleAxis dataKey="sensor" tick={{ fill: '#475569', fontSize: 12 }} />
               <Radar dataKey="value" stroke={color} fill={color} fillOpacity={0.15} strokeWidth={1.5} />
             </RadarChart>
           </ResponsiveContainer>
@@ -292,9 +292,9 @@ export default function Dashboard() {
                   <stop offset="95%" stopColor={color} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="time" tick={{ fontSize: 8, fill: '#475569' }} tickLine={false} axisLine={false} interval={9} />
-              <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: '#475569' }} tickLine={false} axisLine={false} />
-              <Tooltip contentStyle={{ background: '#0D1526', border: '1px solid rgba(0,229,255,0.2)', borderRadius: 6, fontSize: 10, fontFamily: 'var(--font-mono)' }} />
+              <XAxis dataKey="time" tick={{ fontSize: 10, fill: '#475569' }} tickLine={false} axisLine={false} interval={9} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#475569' }} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ background: '#0D1526', border: '1px solid rgba(0,229,255,0.2)', borderRadius: 6, fontSize: 12, fontFamily: 'var(--font-mono)' }} />
               <Area type="monotone" dataKey="value" stroke={color} strokeWidth={2} fill="url(#hazGrad)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -311,15 +311,15 @@ export default function Dashboard() {
                   className="flex items-start gap-2 py-1.5 border-b" style={{ borderColor: 'var(--border-dim)' }}>
                   <AlertTriangle size={10} style={{ color: a.severity === 'critical' ? '#EF4444' : '#F97316', flexShrink: 0, marginTop: 2 }} />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[10px] font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{a.title}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{a.sensor} · {a.value?.toFixed?.(1)}{a.unit || ''}</div>
+                    <div className="text-[12px] font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{a.title}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{a.sensor} · {a.value?.toFixed?.(1)}{a.unit || ''}</div>
                   </div>
-                  <span className={`badge badge-${a.severity}`} style={{ fontSize: 8 }}>{a.severity}</span>
+                  <span className={`badge badge-${a.severity}`} style={{ fontSize: 10 }}>{a.severity}</span>
                 </motion.div>
               ))}
             </AnimatePresence>
             {alerts.length === 0 && (
-              <div className="text-[11px] text-center py-4" style={{ color: 'var(--text-muted)' }}>No active alerts</div>
+              <div className="text-[13px] text-center py-4" style={{ color: 'var(--text-muted)' }}>No active alerts</div>
             )}
           </div>
         </div>
@@ -332,11 +332,11 @@ export default function Dashboard() {
               <div key={i} className="flex items-center gap-2 py-1 border-b" style={{ borderColor: 'var(--border-dim)' }}>
                 <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                   style={{ background: a.priority === 0 ? '#EF4444' : a.priority === 1 ? '#F97316' : '#22C55E' }} />
-                <div className="text-[9px] leading-tight" style={{ color: 'var(--text-secondary)' }}>{a.label}</div>
+                <div className="text-[11px] leading-tight" style={{ color: 'var(--text-secondary)' }}>{a.label}</div>
               </div>
             ))}
             {decidedActions.length === 0 && (
-              <div className="text-[11px] text-center py-4" style={{ color: 'var(--text-muted)' }}>Monitoring...</div>
+              <div className="text-[13px] text-center py-4" style={{ color: 'var(--text-muted)' }}>Monitoring...</div>
             )}
           </div>
         </div>
@@ -368,13 +368,13 @@ export default function Dashboard() {
               return (
                 <div key={i} className="rounded-lg p-2 flex flex-col gap-1 items-center transition-all"
                   style={{ background: `${zc}12`, border: `1px solid ${zc}25` }}>
-                  <div className="text-[8px] font-bold text-center leading-tight" style={{ color: zc }}>
+                  <div className="text-[10px] font-bold text-center leading-tight" style={{ color: zc }}>
                     {z.zone?.split(' ')[0]}
                   </div>
                   <div className="text-sm font-bold font-mono" style={{ color: zc, fontFamily: 'var(--font-mono)' }}>
                     {z.hazard_score?.toFixed(0)}
                   </div>
-                  <div className={`badge badge-${z.risk_level}`} style={{ fontSize: 7, padding: '1px 4px' }}>
+                  <div className={`badge badge-${z.risk_level}`} style={{ fontSize: 9, padding: '1px 4px' }}>
                     {z.risk_level?.slice(0, 3)}
                   </div>
                 </div>
