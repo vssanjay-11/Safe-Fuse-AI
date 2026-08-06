@@ -1,0 +1,17 @@
+[project]
+name = "safe-fuse-ai"
+version = "1.0.0"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "sqlalchemy>=2.0.0",
+    "pydantic>=2.10.0",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "paho-mqtt>=2.1.0",
+    "numpy>=2.0.0",
+    "python-multipart>=0.0.20",
+    "websockets>=14.0",
+    "aiofiles>=24.1.0"
+]
