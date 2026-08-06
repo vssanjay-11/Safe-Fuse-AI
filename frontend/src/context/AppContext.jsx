@@ -116,8 +116,13 @@ export function AppProvider({ children }) {
   const wsRef = useRef(null);
   const reconnectRef = useRef(null);
 
-  // ─── WebSocket Connection ────────────────────────────────────────────
+  // ─── WebSocket Connection (Only when supported) ──────────────────────
   const connectWS = useCallback(() => {
+    if (typeof window !== 'undefined' && (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) {
+      // Vercel Serverless environment — skip WS attempts to prevent connection closed loops
+      return;
+    }
+
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
     try {
@@ -125,7 +130,6 @@ export function AppProvider({ children }) {
 
       ws.onopen = () => {
         setConnected(true);
-        console.log('[WS] Connected to SAFE-FUSE AI');
         ws.pingInterval = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'ping' }));
@@ -168,7 +172,6 @@ export function AppProvider({ children }) {
 
       ws.onclose = () => {
         clearInterval(ws.pingInterval);
-        reconnectRef.current = setTimeout(connectWS, 4000);
       };
 
       ws.onerror = () => {
@@ -177,14 +180,13 @@ export function AppProvider({ children }) {
 
       wsRef.current = ws;
     } catch {
-      reconnectRef.current = setTimeout(connectWS, 5000);
+      // Ignore
     }
   }, []);
 
   useEffect(() => {
     connectWS();
     return () => {
-      clearTimeout(reconnectRef.current);
       wsRef.current?.close();
     };
   }, [connectWS]);
@@ -196,107 +198,110 @@ export function AppProvider({ children }) {
       tick++;
       const nowStr = new Date().toLocaleTimeString('en-US', { hour12: false });
 
+      let fetchedData = null;
+
       // Try HTTP poll if WebSocket is not open
       if (wsRef.current?.readyState !== WebSocket.OPEN) {
         try {
           const res = await axios.get(`${API_BASE}/api/live-state`);
           if (res.data && res.data.data) {
-            const d = res.data.data;
-            setConnected(true);
-            setState(prev => ({
-              ...prev,
-              hardwareMode: d.hardware_mode || prev.hardwareMode,
-              hazardScore: d.hazard_score ?? prev.hazardScore,
-              riskLevel: d.risk_level || prev.riskLevel,
-              safetyScore: d.safety_score ?? prev.safetyScore,
-              confidence: d.confidence ?? prev.confidence,
-              shapValues: d.shap_values?.length ? d.shap_values : prev.shapValues,
-              triggeredRules: d.triggered_rules || prev.triggeredRules,
-              aggregate: d.aggregate || prev.aggregate,
-              zoneScores: d.zone_scores?.length ? d.zone_scores : prev.zoneScores,
-              relayStatus: d.relay_status || prev.relayStatus,
-              alerts: d.alerts?.length ? [...d.alerts, ...prev.alerts].slice(0, 50) : prev.alerts,
-              flameDetected: d.flame_detected ?? prev.flameDetected,
-              anomalyZone: d.anomaly_zone ?? prev.anomalyZone,
-              reasoning: d.reasoning?.length ? d.reasoning : prev.reasoning,
-              decidedActions: d.decided_actions?.length ? d.decided_actions : prev.decidedActions,
-              incidentCreated: d.incident_created || false,
-              connected: true,
-              lastUpdate: res.data.timestamp || new Date().toISOString(),
-            }));
-            return;
+            fetchedData = res.data;
           }
         } catch {
-          // HTTP poll fallback to client-side smooth ticker
+          // ignore
         }
+      }
+
+      if (fetchedData && fetchedData.data) {
+        const d = fetchedData.data;
+        setConnected(true);
+        setState(prev => ({
+          ...prev,
+          hardwareMode: d.hardware_mode || prev.hardwareMode,
+          hazardScore: d.hazard_score ?? prev.hazardScore,
+          riskLevel: d.risk_level || prev.riskLevel,
+          safetyScore: d.safety_score ?? prev.safetyScore,
+          confidence: d.confidence ?? prev.confidence,
+          shapValues: d.shap_values?.length ? d.shap_values : prev.shapValues,
+          triggeredRules: d.triggered_rules || prev.triggeredRules,
+          aggregate: d.aggregate || prev.aggregate,
+          zoneScores: d.zone_scores?.length ? d.zone_scores : prev.zoneScores,
+          relayStatus: d.relay_status || prev.relayStatus,
+          alerts: d.alerts?.length ? [...d.alerts, ...prev.alerts].slice(0, 50) : prev.alerts,
+          flameDetected: d.flame_detected ?? prev.flameDetected,
+          anomalyZone: d.anomaly_zone ?? prev.anomalyZone,
+          reasoning: d.reasoning?.length ? d.reasoning : prev.reasoning,
+          decidedActions: d.decided_actions?.length ? d.decided_actions : prev.decidedActions,
+          incidentCreated: d.incident_created || false,
+          connected: true,
+          lastUpdate: fetchedData.timestamp || new Date().toISOString(),
+        }));
+        return;
       }
 
       // Smooth client-side micro-variations
       setConnected(true);
-      setState(prev => {
-        const t = +(28.5 + Math.sin(tick * 0.3) * 0.9 + (Math.random() - 0.5) * 0.4).toFixed(1);
-        const h = +(62.0 + Math.cos(tick * 0.3) * 2.2 + (Math.random() - 0.5) * 0.8).toFixed(1);
-        const s = +(45.0 + Math.sin(tick * 0.4) * 3.5 + (Math.random() - 0.5) * 1.2).toFixed(1);
-        const g = +(85.0 + Math.cos(tick * 0.4) * 5.0 + (Math.random() - 0.5) * 2.0).toFixed(1);
-        const d = +(38.0 + Math.sin(tick * 0.5) * 3.0 + (Math.random() - 0.5) * 1.0).toFixed(1);
-        const c = +(4.2 + Math.cos(tick * 0.5) * 0.35 + (Math.random() - 0.5) * 0.1).toFixed(2);
-        const p = Math.round(c * 240);
 
-        const score = +(18.4 + Math.sin(tick * 0.2) * 2.8 + (Math.random() - 0.5) * 0.8).toFixed(1);
-        const risk_level = score >= 60 ? 'critical' : score >= 40 ? 'warning' : 'low';
-        const safety_score = +(100 - score).toFixed(1);
+      const t = +(28.5 + Math.sin(tick * 0.3) * 0.9 + (Math.random() - 0.5) * 0.4).toFixed(1);
+      const h = +(62.0 + Math.cos(tick * 0.3) * 2.2 + (Math.random() - 0.5) * 0.8).toFixed(1);
+      const s = +(45.0 + Math.sin(tick * 0.4) * 3.5 + (Math.random() - 0.5) * 1.2).toFixed(1);
+      const g = +(85.0 + Math.cos(tick * 0.4) * 5.0 + (Math.random() - 0.5) * 2.0).toFixed(1);
+      const d = +(38.0 + Math.sin(tick * 0.5) * 3.0 + (Math.random() - 0.5) * 1.0).toFixed(1);
+      const c = +(4.2 + Math.cos(tick * 0.5) * 0.35 + (Math.random() - 0.5) * 0.1).toFixed(2);
+      const p = Math.round(c * 240);
 
-        const newAgg = {
-          ...prev.aggregate,
-          temperature: t, humidity: h, smoke_ppm: s, gas_ppm: g,
-          dust_ugm3: d, current_amps: c, power_watts: p,
-        };
+      const score = +(18.4 + Math.sin(tick * 0.2) * 2.8 + (Math.random() - 0.5) * 0.8).toFixed(1);
+      const risk_level = score >= 60 ? 'critical' : score >= 40 ? 'warning' : 'low';
+      const safety_score = +(100 - score).toFixed(1);
 
-        const newShap = [
-          { feature: 'Temperature', contribution: +(8.0 + Math.sin(tick * 0.3) * 0.5).toFixed(1), value: `${t} °C` },
-          { feature: 'Gas Concentration (MQ-135)', contribution: +(4.0 + Math.cos(tick * 0.4) * 0.6).toFixed(1), value: `${g} ppm` },
-          { feature: 'Dust Particle Density', contribution: +(3.5 + Math.sin(tick * 0.5) * 0.4).toFixed(1), value: `${d} µg/m³` },
-          { feature: 'Electrical Current', contribution: +(2.5 + Math.cos(tick * 0.5) * 0.2).toFixed(1), value: `${c} A` },
-          { feature: 'Humidity Buffer', contribution: +(-4.0 - Math.cos(tick * 0.3) * 0.4).toFixed(1), value: `${h} %` },
-          { feature: 'Flame Detection', contribution: 0.0, value: 'SAFE' },
-        ];
+      const newAgg = {
+        temperature: t, humidity: h, smoke_ppm: s, gas_ppm: g,
+        dust_ugm3: d, current_amps: c, power_watts: p,
+        active_zones: 7, anomaly_zone: null, anomaly_active: false,
+      };
 
-        const newZones = [
-          { zone: 'Raw Material Store', score: +(15 + Math.sin(tick * 0.3) * 1.2).toFixed(1), risk_level: 'low', anomaly: false },
-          { zone: 'Mixing Room', score: +(22 + Math.cos(tick * 0.4) * 1.5).toFixed(1), risk_level: 'low', anomaly: false },
-          { zone: 'Drying Chamber', score: +(28 + Math.sin(tick * 0.5) * 1.8).toFixed(1), risk_level: 'low', anomaly: false },
-          { zone: 'Packing Area', score: +(14 + Math.cos(tick * 0.3) * 1.0).toFixed(1), risk_level: 'low', anomaly: false },
-          { zone: 'Storage Vault', score: +(12 + Math.sin(tick * 0.4) * 0.8).toFixed(1), risk_level: 'low', anomaly: false },
-          { zone: 'Electrical Room', score: +(24 + Math.cos(tick * 0.5) * 1.4).toFixed(1), risk_level: 'low', anomaly: false },
-          { zone: 'Loading Bay', score: +(16 + Math.sin(tick * 0.3) * 1.1).toFixed(1), risk_level: 'low', anomaly: false },
-        ];
+      const newShap = [
+        { feature: 'Temperature', contribution: +(8.0 + Math.sin(tick * 0.3) * 0.5).toFixed(1), value: `${t} °C` },
+        { feature: 'Gas Concentration (MQ-135)', contribution: +(4.0 + Math.cos(tick * 0.4) * 0.6).toFixed(1), value: `${g} ppm` },
+        { feature: 'Dust Particle Density', contribution: +(3.5 + Math.sin(tick * 0.5) * 0.4).toFixed(1), value: `${d} µg/m³` },
+        { feature: 'Electrical Current', contribution: +(2.5 + Math.cos(tick * 0.5) * 0.2).toFixed(1), value: `${c} A` },
+        { feature: 'Humidity Buffer', contribution: +(-4.0 - Math.cos(tick * 0.3) * 0.4).toFixed(1), value: `${h} %` },
+        { feature: 'Flame Detection', contribution: 0.0, value: 'SAFE' },
+      ];
 
-        setSensorHistory(hist => {
-          const add = (arr, val) => [...arr.slice(-119), { time: nowStr, value: val }];
-          return {
-            hazard_score:  add(hist.hazard_score,  score),
-            temperature:   add(hist.temperature,   t),
-            humidity:      add(hist.humidity,      h),
-            smoke_ppm:     add(hist.smoke_ppm,     s),
-            gas_ppm:       add(hist.gas_ppm,       g),
-            dust_ugm3:     add(hist.dust_ugm3,     d),
-            current_amps:  add(hist.current_amps,  c),
-          };
-        });
+      const newZones = [
+        { zone: 'Raw Material Store', score: +(15 + Math.sin(tick * 0.3) * 1.2).toFixed(1), risk_level: 'low', anomaly: false },
+        { zone: 'Mixing Room', score: +(22 + Math.cos(tick * 0.4) * 1.5).toFixed(1), risk_level: 'low', anomaly: false },
+        { zone: 'Drying Chamber', score: +(28 + Math.sin(tick * 0.5) * 1.8).toFixed(1), risk_level: 'low', anomaly: false },
+        { zone: 'Packing Area', score: +(14 + Math.cos(tick * 0.3) * 1.0).toFixed(1), risk_level: 'low', anomaly: false },
+        { zone: 'Storage Vault', score: +(12 + Math.sin(tick * 0.4) * 0.8).toFixed(1), risk_level: 'low', anomaly: false },
+        { zone: 'Electrical Room', score: +(24 + Math.cos(tick * 0.5) * 1.4).toFixed(1), risk_level: 'low', anomaly: false },
+        { zone: 'Loading Bay', score: +(16 + Math.sin(tick * 0.3) * 1.1).toFixed(1), risk_level: 'low', anomaly: false },
+      ];
 
-        return {
-          ...prev,
-          hazardScore: score,
-          riskLevel: risk_level,
-          safetyScore: safety_score,
-          aggregate: newAgg,
-          shapValues: newShap,
-          zoneScores: newZones,
-          reasoning: prev.reasoning?.length ? prev.reasoning : INITIAL_REASONING,
-          connected: true,
-          lastUpdate: new Date().toISOString(),
-        };
-      });
+      // Update sensorHistory safely outside state updater
+      setSensorHistory(hist => ({
+        hazard_score:  [...hist.hazard_score.slice(-119),  { time: nowStr, value: score }],
+        temperature:   [...hist.temperature.slice(-119),   { time: nowStr, value: t }],
+        humidity:      [...hist.humidity.slice(-119),      { time: nowStr, value: h }],
+        smoke_ppm:     [...hist.smoke_ppm.slice(-119),     { time: nowStr, value: s }],
+        gas_ppm:       [...hist.gas_ppm.slice(-119),       { time: nowStr, value: g }],
+        dust_ugm3:     [...hist.dust_ugm3.slice(-119),     { time: nowStr, value: d }],
+        current_amps:  [...hist.current_amps.slice(-119),  { time: nowStr, value: c }],
+      }));
+
+      setState(prev => ({
+        ...prev,
+        hazardScore: score,
+        riskLevel: risk_level,
+        safetyScore: safety_score,
+        aggregate: newAgg,
+        shapValues: newShap,
+        zoneScores: newZones,
+        reasoning: prev.reasoning?.length ? prev.reasoning : INITIAL_REASONING,
+        connected: true,
+        lastUpdate: new Date().toISOString(),
+      }));
     }, 2000);
 
     return () => clearInterval(ticker);

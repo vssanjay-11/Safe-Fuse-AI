@@ -8,5 +8,6 @@ if backend_dir not in sys.path:
 
 from main import app  # noqa: E402
 
-# Export for Vercel Serverless
-__all__ = ["app"]
+# Export app and handler for Vercel Serverless Function runtime
+handler = app
+__all__ = ["app", "handler"]
