@@ -18,8 +18,11 @@ from datetime import datetime
 from contextlib import asynccontextmanager
 from collections import deque
 
+import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 
 from database import init_db
 from websocket_manager import ws_manager
@@ -378,14 +381,39 @@ async def websocket_endpoint(websocket: WebSocket):
         ws_manager.disconnect(websocket)
 
 
-@app.get("/")
-async def root():
-    return {
-        "platform": "SAFE-FUSE AI",
-        "tagline": "Predict • Explain • Act • Prevent",
-        "version": "1.0.0",
-        "status": "operational",
-        "mode": app_state.get("hardware_mode", "simulation"),
-        "api_docs": "/docs",
-        "websocket": "/ws",
-    }
+# ─── Static Frontend Serving (Production Single-Service) ──────────────────────
+FRONTEND_DIST = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+if not os.path.exists(FRONTEND_DIST):
+    FRONTEND_DIST = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
+
+if os.path.exists(FRONTEND_DIST):
+    assets_dir = os.path.join(FRONTEND_DIST, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/") or full_path.startswith("auth/") or full_path in ["docs", "openapi.json", "redoc", "ws"]:
+            return JSONResponse({"error": "Endpoint not found"}, status_code=404)
+        
+        target_file = os.path.join(FRONTEND_DIST, full_path)
+        if full_path and os.path.isfile(target_file):
+            return FileResponse(target_file)
+        
+        index_file = os.path.join(FRONTEND_DIST, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        
+        return JSONResponse({"error": "Frontend build not found"}, status_code=404)
+else:
+    @app.get("/")
+    async def root():
+        return {
+            "platform": "SAFE-FUSE AI",
+            "tagline": "Predict • Explain • Act • Prevent",
+            "version": "1.0.0",
+            "status": "operational",
+            "mode": app_state.get("hardware_mode", "simulation"),
+            "api_docs": "/docs",
+            "websocket": "/ws",
+        }
