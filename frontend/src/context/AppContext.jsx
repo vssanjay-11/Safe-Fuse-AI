@@ -161,42 +161,60 @@ export function AppProvider({ children }) {
   // ─── Polling Fallback for environments without WebSockets (e.g. Vercel Serverless) ───
   useEffect(() => {
     const fetchLiveState = async () => {
-      if (!connected) {
-        try {
-          const res = await axios.get(`${API_BASE}/api/live-state`);
-          if (res.data && res.data.data) {
-            const d = res.data.data;
-            setState(prev => ({
-              ...prev,
-              hardwareMode: d.hardware_mode || prev.hardwareMode,
-              hazardScore: d.hazard_score ?? prev.hazardScore,
-              riskLevel: d.risk_level || prev.riskLevel,
-              safetyScore: d.safety_score ?? prev.safetyScore,
-              confidence: d.confidence ?? prev.confidence,
-              shapValues: d.shap_values || prev.shapValues,
-              triggeredRules: d.triggered_rules || prev.triggeredRules,
-              aggregate: d.aggregate || prev.aggregate,
-              zoneScores: d.zone_scores || prev.zoneScores,
-              relayStatus: d.relay_status || prev.relayStatus,
-              alerts: d.alerts?.length ? [...d.alerts, ...prev.alerts].slice(0, 50) : prev.alerts,
-              flameDetected: d.flame_detected ?? prev.flameDetected,
-              anomalyZone: d.anomaly_zone ?? prev.anomalyZone,
-              reasoning: d.reasoning || prev.reasoning,
-              decidedActions: d.decided_actions || prev.decidedActions,
-              incidentCreated: d.incident_created || false,
-              connected: true,
-            }));
+      if (wsRef.current?.readyState === WebSocket.OPEN) return;
+
+      try {
+        const res = await axios.get(`${API_BASE}/api/live-state`);
+        if (res.data && res.data.data) {
+          const d = res.data.data;
+          setConnected(true);
+          const t = new Date(res.data.timestamp || Date.now()).toLocaleTimeString('en-US', { hour12: false });
+          setState(prev => ({
+            ...prev,
+            hardwareMode: d.hardware_mode || prev.hardwareMode,
+            hazardScore: d.hazard_score ?? prev.hazardScore,
+            riskLevel: d.risk_level || prev.riskLevel,
+            safetyScore: d.safety_score ?? prev.safetyScore,
+            confidence: d.confidence ?? prev.confidence,
+            shapValues: d.shap_values || prev.shapValues,
+            triggeredRules: d.triggered_rules || prev.triggeredRules,
+            aggregate: d.aggregate || prev.aggregate,
+            zoneScores: d.zone_scores || prev.zoneScores,
+            relayStatus: d.relay_status || prev.relayStatus,
+            alerts: d.alerts?.length ? [...d.alerts, ...prev.alerts].slice(0, 50) : prev.alerts,
+            flameDetected: d.flame_detected ?? prev.flameDetected,
+            anomalyZone: d.anomaly_zone ?? prev.anomalyZone,
+            reasoning: d.reasoning || prev.reasoning,
+            decidedActions: d.decided_actions || prev.decidedActions,
+            incidentCreated: d.incident_created || false,
+            connected: true,
+            lastUpdate: res.data.timestamp,
+          }));
+
+          if (d.aggregate) {
+            setSensorHistory(prev => {
+              const add = (arr, val) => [...arr.slice(-119), { time: t, value: val }];
+              return {
+                hazard_score:  add(prev.hazard_score,  d.hazard_score ?? 0),
+                temperature:   add(prev.temperature,   d.aggregate?.temperature ?? 0),
+                humidity:      add(prev.humidity,      d.aggregate?.humidity ?? 0),
+                smoke_ppm:     add(prev.smoke_ppm,     d.aggregate?.smoke_ppm ?? 0),
+                gas_ppm:       add(prev.gas_ppm,       d.aggregate?.gas_ppm ?? 0),
+                dust_ugm3:     add(prev.dust_ugm3,     d.aggregate?.dust_ugm3 ?? 0),
+                current_amps:  add(prev.current_amps,  d.aggregate?.current_amps ?? 0),
+              };
+            });
           }
-        } catch {
-          // ignore
         }
+      } catch {
+        // If HTTP poll fails as well
       }
     };
 
     fetchLiveState();
     const intervalId = setInterval(fetchLiveState, 2500);
     return () => clearInterval(intervalId);
-  }, [connected]);
+  }, []);
 
   // ─── API Helpers ─────────────────────────────────────────────────────
   const controlRelay = useCallback(async (device, action, reason = 'Manual override') => {
