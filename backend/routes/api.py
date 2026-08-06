@@ -13,6 +13,10 @@ from pydantic import BaseModel
 # Shared app_state set by main.py
 _app_state: dict = {}
 
+def set_app_state(state: dict):
+    global _app_state
+    _app_state = state
+
 def _ensure_populated():
     if not _app_state.get("aggregate"):
         try:
