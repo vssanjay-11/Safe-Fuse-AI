@@ -9,7 +9,7 @@ const API_BASE = import.meta.env.VITE_API_BASE || (
     : (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:8000')
 );
 
-// Demo credentials
+// Demo credentials (also validated on backend)
 const DEMO_USERS = [
   { email: 'admin@safefuse.ai',   password: 'SafeFuse2026', name: 'Rajesh Kumar',   role: 'HSE Manager',    id: '1' },
   { email: 'safety@safefuse.ai',  password: 'Safety2026',   name: 'Dr. Priya Sharma', role: 'Safety Officer', id: '2' },
@@ -18,14 +18,11 @@ const DEMO_USERS = [
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('sf_user');
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return DEMO_USERS[0];
+    try { return JSON.parse(localStorage.getItem('sf_user')); } catch { return null; }
   });
 
   const login = async (email, password) => {
+    // Try backend first
     try {
       const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
       const u = res.data.user;
@@ -34,6 +31,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('sf_token', res.data.token);
       return u;
     } catch {
+      // Fallback to local check (offline mode)
       const match = DEMO_USERS.find(
         u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
       );
@@ -46,7 +44,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    setUser(DEMO_USERS[0]);
+    setUser(null);
     localStorage.removeItem('sf_user');
     localStorage.removeItem('sf_token');
   };
@@ -58,10 +56,4 @@ export function AuthProvider({ children }) {
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
+export const useAuth = () => useContext(AuthContext);
