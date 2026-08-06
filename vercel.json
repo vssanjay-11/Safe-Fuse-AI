@@ -1,13 +1,13 @@
 {
-  "buildCommand": "npm --prefix frontend install && npm --prefix frontend run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
-      "source": "/api/:path*",
+      "source": "/api/(.*)",
       "destination": "/api/index.py"
     },
     {
-      "source": "/auth/:path*",
+      "source": "/auth/(.*)",
       "destination": "/api/index.py"
     },
     {
@@ -19,7 +19,7 @@
       "destination": "/api/index.py"
     },
     {
-      "source": "/((?!api|auth|docs|openapi.json).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
