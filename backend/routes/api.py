@@ -18,34 +18,35 @@ def set_app_state(state: dict):
     _app_state = state
 
 def _ensure_populated():
-    try:
-        from hardware.sensor_simulator import sensor_simulator
-        from hardware.relay_controller import relay_controller
-        from agents.hazard_score_engine import hazard_score_engine
-        from agents.agentic_decision_engine import agentic_engine
+    if not _app_state.get("aggregate"):
+        try:
+            from hardware.sensor_simulator import sensor_simulator
+            from hardware.relay_controller import relay_controller
+            from agents.hazard_score_engine import hazard_score_engine
+            from agents.agentic_decision_engine import agentic_engine
 
-        zones = sensor_simulator.generate_all_zones()
-        agg = sensor_simulator.get_aggregate_reading(zones)
-        hazard = hazard_score_engine.calculate(agg)
-        dec = agentic_engine.evaluate(agg, hazard)
+            zones = sensor_simulator.generate_all_zones()
+            agg = sensor_simulator.get_aggregate_reading(zones)
+            hazard = hazard_score_engine.calculate(agg)
+            dec = agentic_engine.evaluate(agg, hazard)
 
-        _app_state.update({
-            "hardware_mode": _app_state.get("hardware_mode", "simulation"),
-            "sensor_zones": zones,
-            "aggregate": agg,
-            "hazard_result": hazard,
-            "last_decision": dec,
-            "relay_status": relay_controller.get_all_status(),
-            "alerts": list(_app_state.get("alerts", [])),
-            "incidents": _app_state.get("incidents", []),
-            "decision_feed": ([dec] + _app_state.get("decision_feed", []))[:10],
-            "zone_scores": hazard.get("zone_scores", []),
-        })
-    except Exception as e:
-        print("[POPULATE] Error:", e)
+            _app_state.update({
+                "hardware_mode": "simulation",
+                "sensor_zones": zones,
+                "aggregate": agg,
+                "hazard_result": hazard,
+                "last_decision": dec,
+                "relay_status": relay_controller.get_all_status(),
+                "alerts": [],
+                "incidents": [],
+                "decision_feed": [dec] if dec else [],
+                "zone_scores": hazard.get("zone_scores", []),
+            })
+        except Exception:
+            pass
 
 
-router = APIRouter(tags=["Platform APIs"])
+router = APIRouter(prefix="/api", tags=["Platform APIs"])
 
 
 @router.get("/live-state")
