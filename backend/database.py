@@ -3,10 +3,16 @@ SAFE-FUSE AI — Database Configuration
 SQLAlchemy + SQLite setup for persistent storage.
 """
 
+import os
+import tempfile
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "sqlite:///./safefuse.db"
+if os.getenv("VERCEL"):
+    db_path = os.path.join(tempfile.gettempdir(), "safefuse.db")
+    DATABASE_URL = f"sqlite:///{db_path}"
+else:
+    DATABASE_URL = "sqlite:///./safefuse.db"
 
 engine = create_engine(
     DATABASE_URL,
