@@ -158,6 +158,46 @@ export function AppProvider({ children }) {
     };
   }, [connectWS]);
 
+  // ─── Polling Fallback for environments without WebSockets (e.g. Vercel Serverless) ───
+  useEffect(() => {
+    const fetchLiveState = async () => {
+      if (!connected) {
+        try {
+          const res = await axios.get(`${API_BASE}/api/live-state`);
+          if (res.data && res.data.data) {
+            const d = res.data.data;
+            setState(prev => ({
+              ...prev,
+              hardwareMode: d.hardware_mode || prev.hardwareMode,
+              hazardScore: d.hazard_score ?? prev.hazardScore,
+              riskLevel: d.risk_level || prev.riskLevel,
+              safetyScore: d.safety_score ?? prev.safetyScore,
+              confidence: d.confidence ?? prev.confidence,
+              shapValues: d.shap_values || prev.shapValues,
+              triggeredRules: d.triggered_rules || prev.triggeredRules,
+              aggregate: d.aggregate || prev.aggregate,
+              zoneScores: d.zone_scores || prev.zoneScores,
+              relayStatus: d.relay_status || prev.relayStatus,
+              alerts: d.alerts?.length ? [...d.alerts, ...prev.alerts].slice(0, 50) : prev.alerts,
+              flameDetected: d.flame_detected ?? prev.flameDetected,
+              anomalyZone: d.anomaly_zone ?? prev.anomalyZone,
+              reasoning: d.reasoning || prev.reasoning,
+              decidedActions: d.decided_actions || prev.decidedActions,
+              incidentCreated: d.incident_created || false,
+              connected: true,
+            }));
+          }
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    fetchLiveState();
+    const intervalId = setInterval(fetchLiveState, 2500);
+    return () => clearInterval(intervalId);
+  }, [connected]);
+
   // ─── API Helpers ─────────────────────────────────────────────────────
   const controlRelay = useCallback(async (device, action, reason = 'Manual override') => {
     try {

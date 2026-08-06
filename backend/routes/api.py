@@ -13,11 +13,63 @@ from pydantic import BaseModel
 # Shared app_state set by main.py
 _app_state: dict = {}
 
-def set_app_state(state: dict):
-    global _app_state
-    _app_state = state
+def _ensure_populated():
+    if not _app_state.get("aggregate"):
+        try:
+            from hardware.sensor_simulator import sensor_simulator
+            from hardware.relay_controller import relay_controller
+            from agents.hazard_score_engine import hazard_score_engine
+            from agents.agentic_decision_engine import agentic_engine
+
+            zones = sensor_simulator.generate_all_zones()
+            agg = sensor_simulator.get_aggregate_reading(zones)
+            hazard = hazard_score_engine.calculate(agg)
+            dec = agentic_engine.evaluate(agg, hazard)
+
+            _app_state.update({
+                "hardware_mode": "simulation",
+                "sensor_zones": zones,
+                "aggregate": agg,
+                "hazard_result": hazard,
+                "last_decision": dec,
+                "relay_status": relay_controller.get_all_status(),
+                "alerts": [],
+                "incidents": [],
+                "decision_feed": [dec] if dec else [],
+                "zone_scores": hazard.get("zone_scores", []),
+            })
+        except Exception:
+            pass
+
 
 router = APIRouter(prefix="/api", tags=["Platform APIs"])
+
+
+@router.get("/live-state")
+async def get_live_state():
+    """Live state payload equivalent to WebSocket frame for HTTP polling fallback."""
+    _ensure_populated()
+    return {
+        "type": "update",
+        "data": {
+            "hardware_mode": _app_state.get("hardware_mode", "simulation"),
+            "hazard_score": _app_state.get("hazard_result", {}).get("score", 0),
+            "risk_level": _app_state.get("hazard_result", {}).get("risk_level", "low"),
+            "safety_score": _app_state.get("hazard_result", {}).get("safety_score", 100),
+            "confidence": _app_state.get("hazard_result", {}).get("confidence", 85),
+            "shap_values": _app_state.get("hazard_result", {}).get("shap_values", []),
+            "triggered_rules": _app_state.get("hazard_result", {}).get("triggered_rules", []),
+            "aggregate": _app_state.get("aggregate", {}),
+            "zone_scores": _app_state.get("zone_scores", []),
+            "relay_status": _app_state.get("relay_status", {}),
+            "alerts": list(_app_state.get("alerts", [])),
+            "flame_detected": _app_state.get("aggregate", {}).get("flame_detected", False),
+            "anomaly_zone": _app_state.get("aggregate", {}).get("anomaly_zone"),
+            "reasoning": _app_state.get("last_decision", {}).get("reasoning", []),
+            "decided_actions": _app_state.get("last_decision", {}).get("actions", []),
+        },
+        "timestamp": datetime.utcnow().isoformat(),
+    }
 
 
 # ═══════════════════════════════════════════════════════
@@ -27,6 +79,7 @@ router = APIRouter(prefix="/api", tags=["Platform APIs"])
 @router.get("/dashboard")
 async def get_dashboard():
     """Complete dashboard snapshot — KPIs, alerts, risk, agent decisions."""
+    _ensure_populated()
     hazard = _app_state.get("hazard_result", {})
     aggregate = _app_state.get("aggregate", {})
     relay = _app_state.get("relay_status", {})
